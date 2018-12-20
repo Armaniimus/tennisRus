@@ -1,0 +1,98 @@
+1. Geef de spelersnaam en het geslacht van elke speler die in Leiden woont.
+SELECT naam, geslacht, woonplaats
+FROM spelers
+WHERE woonplaats = "leiden"
+
+2 Geef het nummer, de woonplaats en het geboortejaar van elke speler 
+die of in Leiden woont of in 1963 geboren is, 
+maar niet van diegenen die in Leiden wonen en in 1963 geboren zijn.
+
+SELECT spelersnr, woonplaats, geb_jaar
+FROM spelers
+WHERE (geb_jaar = 1963 AND woonplaats <> "leiden") 
+OR (geb_jaar <> 1963 AND woonplaats = "leiden")
+
+
+3. Geef de namen en geboortejaren van de spelers die toegetreden zijn
+ tot de vereniging toen ze 16, 17, 18, 19 of 20 jaar oud waren.
+
+SELECT naam, geb_jaar
+FROM spelers
+WHERE jaartoe-geb_jaar >= 16 
+AND jaartoe-geb_jaar <= 20
+
+4. Geef het nummer, de naam en de woonplaats van elke speler 
+die in Rijswijk, Rotterdam, Leiden of Voorburg woont.
+
+SELECT spelernr, naam, woonplaats
+FROM spelers
+WHERE woonplaats in ("Rijswijk", "Rotterdam", "Leiden", "Voorburg")
+
+5. Geef de naam en het nummer van elke speler met als 
+voorlaatste letter in de naam de letter e.
+
+SELECT naam
+FROM spelers
+WHERE naam like "%e_"
+
+6. Hoeveel spelers staan in de ‘spelers’ tabel geregistreerd?
+
+SELECT count(spelersnr)
+FROM spelers
+
+7. Hoeveel spelers wonen in Leiden ?
+
+SELECT count(spelersnr)
+FROM spelers
+WHERE woonplaats = "leiden"
+
+
+8. Hoeveel verschillende plaatsnamen bevat de ‘plaats’ kolom ?
+
+SELECT COUNT(DISTINCT woonplaats)
+FROM spelers
+
+9. Geef het gemiddelde boetebedrag betaald voor speler 44.
+SELECT avg(bedrag)
+FROM boetes
+WHERE spelersnr = 44
+
+10. Geef van elke speler die aanvoerder is en voor wie in totaal meer dan 80 euro
+aan boetes is betaald, het spelersnummer en het totale boetebedrag.
+
+SELECT spelersnr, sum(bedrag)
+FROM boetes
+GROUP BY spelersnr
+HAVING sum(bedrag) > 80
+
+11. Geef het spelersnummer van elke speler voor wie meer dan 1 boete
+na 12/08/1980 is betaald, sorteer op spelersnr.
+
+SELECT spelersnr, datum
+FROM boetes
+WHERE datum > 1980-08-12 AND (count(spelersnr) > 1)
+ORDER BY spelernr ASC
+
+12. Geef het spelersnummer en de naam van elke speler 
+die voor het eerste team minstens één wedstrijd heeft gespeeld.
+
+SELECT DISTINCT spelersnr, naam
+FROM spelers
+INNER JOIN wedstrijden USING(spelersnr)
+WHERE teamnr = 1
+
+13. Geef het spelersnummer en de naam van de speler die aanvoerder is van team 1.
+
+SELECT spelersnr, naam
+FROM spelers
+INNER JOIN teams USING(spelersnr)
+WHERE teamnr = 1
+
+14. Geef het spelersnummer en de naam van elke speler voor wie minstens één boete van meer dan 50 euro betaald is.
+
+
+
+15. Geef de teamnummers en spelersnummers van die personen uit Leiden die aanvoerders zijn van de teams uit de eredivisie.
+(Stel bij deze oefening dat er meerdere aanvoerders kunnen zijn per team en dat er meerdere teams in de ere divisie spelen.)
+16. Wat is de laagste boete voor een speler die in Leiden woont?
+17. Wat is het totaalbedrag aan boetes dat betaald is voor spelers uit Rijswijk?
