@@ -46,24 +46,6 @@ Class HtmlElements {
     }
 
     /**
-     * This method is used to generate a form based on the inputs
-     * @param string  $sendMethod           set if the send method is a post, put, get, etc
-     * @param string  $targetUrl            set where the form info needs to be sended to
-     * @param string  $formName             set a form name to be used for the css
-     * @param array   $DB_data              an array with data from a DataBase
-     * @param array   $DB_columnNames       an array with database columnNames
-     * @param array   $DB_dataTypesArray    an array with database variableTypes used for frontend validation
-     * @param array   $DB_requiredNullArray an array with database required fields
-     * @param integer $option               option is used to generate slightly diffrent forms
-     *                                      option 1 is used to generate a form with no data prefilled
-     *                                      option 3 is used to hide the first item of the form
-     */
-    public function generateForm($sendMethod, $targetUrl, $formName, $DB_data, $DB_columnNames, $DB_dataTypesArray, $DB_requiredNullArray, $option = 0) {
-        $headAndFoot = $this->setHeadAndFootForm($formName, $targetUrl, $sendMethod);
-        $main = $this->generateFormMainData($formName, $DB_data, $DB_columnNames, $DB_dataTypesArray, $DB_requiredNullArray, $option);
-    }
-
-    /**
      * This method is used to fill a single row table with the given data
      * @param  array  $generationData needs to be a numbered array
      * @param  string $tableName      a name to use in the html class of the table
@@ -80,97 +62,6 @@ Class HtmlElements {
     }
 
     /**
-     * the method is used to generate the innerpart of a form based on the following data
-     * @param string  $formName          set a form name to be used for the css
-     * @param array   $data              an array with data from a DataBase
-     * @param array   $columnNames       an array with database columnNames
-     * @param array   $dataTypesArray    an array with database variableTypes used for frontend validation
-     * @param array   $requiredNullArray an array with database required fields
-     * @param integer $option            option is used to generate slightly diffrent forms
-     *                                   option 1 is used to generate a form with no data prefilled
-     *                                   option 3 is used to hide the first item of the for
-     *
-     * @return string                    returns the main for content part of the form
-     */
-    private function generateFormMainData($formName, $data, $columnNames, $dataTypesArray, $requiredNullArray, $option) {
-        $form = "";
-
-        if ($option == 3) {
-            $firstItem = 9;
-        } else {
-            $firstItem = 0;
-        }
-
-        $form .= $this->generateFormFieldWithLabel($formName, $data[$columnNames[0]], $columnNames[0], $dataTypesArray[0], $requiredNullArray[0], $firstItem);
-
-        for ($i=1; $i < count($columnNames); $i++) {
-            $form .= $this->generateFormFieldWithLabel($formName, $data[$columnNames[$i]], $columnNames[$i], $dataTypesArray[$i], $requiredNullArray[$i], $option);
-        }
-
-        return $form;
-    }
-
-    /**
-     * this method is used to create a single formfield with label
-     * @param  string $formName    set a form name to be used for the css
-     * @param  string $data        data is used to fill the value field in the input element
-     * @param  string $columnName  this value is used to create the fieldname
-     * @param  string $dataType    this value is used to set frontend validation
-     * @param  string $required    this value is used to set frontend validation as null validation
-     *
-     * @param integer $option      option is used to generate slightly diffrent forms
-     *                             option 1 is used to generate a form with no data prefilled
-     *                             option 3 is used to hide the first item of the for
-     *
-     * @return string              an input field with a associated label element
-     */
-    private function generateFormFieldWithLabel($formName, $data, $columnName, $dataType, $required, $option) {
-        if ($option === 1) {
-            $data = "";
-        }
-
-        if ($option === 9 || $option === "hidden") {
-            $item = "<input class='$formName-input' id='$formName-$columnName-label' name='$columnName' value='$data' type='hidden'>";
-
-        } else {
-            $visibleColumnName = $columnName;
-            $visibleColumnName[0] = strToUpper($columnName[0]);
-            $item = "<label class='$formName-label' for='$formName-$columnName-label'>$visibleColumnName</label>";
-            $item .= "<input class='$formName-input' id='$formName-$columnName-label' name='$columnName' value='$data' $dataType $required><span></span>";
-        }
-
-        return $item;
-    }
-
-    /**
-     * this method is used to create the open and closing lines of a form
-     * @param  string  $sendMethod  set if the send method is a post, put, get, etc
-     * @param  string  $targetUrl   set where the form info needs to be sended to
-     * @param  string  $formName    set a form name to be used for the css
-     * @return array                an array with opening lines, closing lines
-     */
-    private function setHeadAndFootForm($formName, $targetUrl, $method) {
-        $openingLines = "<form class='$formName' id='$formName' name='$formName' action='$targetUrl' method='$method'>";
-
-        $closingLines = "<input class='$formName-button' type='submit' value='submit'>";
-        $closingLines .= "</form>";
-
-        return ["header" => $openingLines, "footer" => $closingLines];
-    }
-
-    /**
-     * combines the head main and footer of the form and returns it
-     * @param  string $head   a form headline
-     * @param  string $main   all formfields
-     * @param  string $footer the form closinglines
-     * @return string         a valid html form
-     */
-    private function combineForm($head, $main, $footer) {
-        $form = $head . $main . $footer;
-        return $form;
-    }
-
-    /**
      * this method is used to generate a table with data contained in them
      * @param  array  $dataArray2d       2 dimensional array the outer being an assoc array and the inner being numbered
      * @param  string $htmlTableName     a name that is used as id for the html table
@@ -181,6 +72,7 @@ Class HtmlElements {
      *                                   option[0] border?
      *                                   option[1] width 100%?
      *                                   option[2] future use
+     *                                   option[3] future use
      *
      * @param  array  $extraColumnsArray an array with extra column to be added can be used to extent functionality
      * @param  string $specialColumnName a column title for the extra collumns
@@ -207,6 +99,10 @@ Class HtmlElements {
 
         if ($option[2] == "1") {
             // select checkboxes
+        }
+
+        if ($option[3] == "1") {
+            // colgroup normal and extra columns
         }
 
         //  start of head generation
@@ -249,12 +145,60 @@ Class HtmlElements {
             }
         $body .= "</tbody>";
 
-        $table = "<table $border $width class='$tablename' id='$tablename'>";
-        $table .= $head;
-        $table .= $body;
-        $table .= "</table>";
+        $opening = "<table $border $width class='$tablename' id='$tablename'>";
+        $closing .= "</table>";
 
-        return $table;
+        return $opening . $head . $table . $closing;
+    }
+
+    /**
+     * UNTESTED!!!!
+     * This method is used to generate a form based on the inputs
+     * @param string  $sendMethod           set if the send method is a post, put, get, etc
+     * @param string  $targetUrl            set where the form info needs to be sended to
+     * @param string  $formName             set a form name to be used for the css
+     * @param array   $data              an array with data from a DataBase
+     * @param array   $columnNames       an array with database columnNames
+     * @param array   $dataTypesArray    an array with database variableTypes used for frontend validation
+     * @param array   $requiredNullArray an array with database required fields
+     * @param integer $option               option is used to generate slightly diffrent forms
+     *                                      option 1 is used to generate a form with no data prefilled
+     *                                      option 3 is used to hide the first item of the form
+     */
+    public function generateForm($sendMethod, $targetUrl, $formName, $data, $columnNames, $dataTypesArray, $requiredNullArray, $option = 0) {
+        $head = "<form class='$formName' id='$formName' name='$formName' action='$targetUrl' method='$sendmethod'>";
+
+        $main = "";
+        for ($i=0; $i < count($columnNames); $i++) {
+            $loc_data           = $data[$columnNames[$i]];
+            $loc_columnName     = $columnNames[$i];
+            $loc_dataType       = $dataTypesArray[$i];
+            $loc_required       = $requiredNullArray[$i];
+            if ($option === 1) {
+                $data = "";
+            }
+
+            if ($option === 3 || $option === "hidden") {
+                $item = "<input class='$formName-input' id='$formName-$loc_columnName-label' name='$loc_columnName' value='$loc_data' type='hidden'>";
+                $option = 0;
+            }
+
+            if ($option === 9 || $option === "hidden") {
+                $item = "<input class='$formName-input' id='$formName-$loc_columnName-label' name='$loc_columnName' value='$loc_data' type='hidden'>";
+
+            } else {
+                $visibleColumnName = $loc_columnName;
+                $visibleColumnName[0] = strToUpper($loc_columnName[0]);
+                $item = "<label class='$formName-label' for='$formName-$loc_columnName-label'>$visibleColumnName</label>";
+                $item .= "<input class='$formName-input' id='$formName-$loc_columnName-label' name='$loc_columnName' value='$loc_data' $loc_dataType $loc_required><span></span>";
+            }
+
+            $main .= $item;
+        }
+
+        $foot = "<input class='$formName-button' type='submit' value='submit'></form>";
+
+        return $head . $main . $foot;
     }
 }
 
